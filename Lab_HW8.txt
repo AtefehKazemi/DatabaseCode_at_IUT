@@ -1,0 +1,74 @@
+---------------------------Q1
+--first transaction
+BEGIN TRAN
+
+SELECT ModifiedDate
+FROM Person.Person
+where BusinessEntityID = 110
+
+waitfor delay '00:00:010'
+
+COMMIT;
+
+SELECT ModifiedDate
+FROM Production.Product
+where ProductID = 317
+
+--second transaction
+BEGIN TRAN
+
+UPDATE Person.Person
+SET ModifiedDate = GETDATE()
+WHERE BusinessEntityID = 110
+
+COMMIT;
+
+select * from Person.Person
+---------------------------Q2
+--dirty read
+
+set transaction isolation level read uncommitted
+waitfor delay '00:00:10'
+select Person.Person.ModifiedDate
+from Person.Person
+where BusinessEntityID = 200
+
+
+begin tran
+update Person.Person
+SET ModifiedDate = GETDATE()
+where BusinessEntityID = 200
+waitfor delay '00:00:20'
+rollback;
+
+select Person.Person.ModifiedDate
+from Person.Person
+where BusinessEntityID = 200
+
+--Non Repeatable Read
+
+-- First Transaction
+
+BEGIN TRAN
+SELECT Person.Person.ModifiedDate
+FROM Person.Person
+WHERE BusinessEntityID = 220
+
+waitfor delay '00:00:20'
+
+SELECT Person.Person.ModifiedDate
+FROM Person.Person
+WHERE BusinessEntityID = 220
+
+COMMIT;
+
+----- Second Transaction
+
+BEGIN TRAN
+waitfor delay '00:00:10'
+
+UPDATE Person.Person
+SET ModifiedDate = GETDATE()
+WHERE BusinessEntityID = 220
+
+COMMIT;

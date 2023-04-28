@@ -1,0 +1,148 @@
+---------------------------q1
+CREATE TABLE ProductLogs(
+	[ProductID] [int] ,
+	[Name] [dbo].[Name],
+	[ProductNumber] [nvarchar](25),
+	[MakeFlag] [dbo].[Flag],
+	[FinishedGoodsFlag] [dbo].[Flag],
+	[Color] [nvarchar](15),
+	[SafetyStockLevel] [smallint],
+	[ReorderPoint] [smallint],
+	[StandardCost] [money],
+	[ListPrice] [money],
+	[Size] [nvarchar](5),
+	[SizeUnitMeasureCode] [nchar](3),
+	[WeightUnitMeasureCode] [nchar](3),
+	[Weight] [decimal](8, 2),
+	[DaysToManufacture] [int],
+	[ProductLine] [nchar](2),
+	[Class] [nchar](2),
+	[Style] [nchar](2),
+	[ProductSubcategoryID] [int],
+	[ProductModelID] [int],
+	[SellStartDate] [datetime],
+	[SellEndDate] [datetime],
+	[DiscontinuedDate] [datetime],
+	[rowguid] [uniqueidentifier],
+	[ModifiedDate] [datetime],
+	[change] [varchar](20))
+
+
+create trigger product_insert
+on Production.Product
+after insert
+as
+begin
+insert into ProductLogs(ProductID,Name,ProductNumber,MakeFlag,FinishedGoodsFlag,Color,SafetyStockLevel,ReorderPoint,StandardCost,ListPrice,Size,SizeUnitMeasureCode,WeightUnitMeasureCode,Weight,DaysToManufacture,ProductLine,Class,Style,ProductSubcategoryID,ProductModelID,SellStartDate,SellEndDate,DiscontinuedDate,rowguid,ModifiedDate,[change])
+select ProductID, Name, ProductNumber, MakeFlag, FinishedGoodsFlag, Color, SafetyStockLevel, ReorderPoint, StandardCost, ListPrice, Size, SizeUnitMeasureCode, WeightUnitMeasureCode, Weight, DaysToManufacture, ProductLine, Class, Style, ProductSubcategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, rowguid, ModifiedDate,'insert' 
+from inserted
+end
+
+create trigger product_delete
+on Production.Product
+after delete
+as
+begin
+insert into ProductLogs(ProductID,Name,ProductNumber,MakeFlag,FinishedGoodsFlag,Color,SafetyStockLevel,ReorderPoint,StandardCost,ListPrice,Size,SizeUnitMeasureCode,WeightUnitMeasureCode,Weight,DaysToManufacture,ProductLine,Class,Style,ProductSubcategoryID,ProductModelID,SellStartDate,SellEndDate,DiscontinuedDate,rowguid,ModifiedDate,change)
+select ProductID, Name, ProductNumber, MakeFlag, FinishedGoodsFlag, Color, SafetyStockLevel, ReorderPoint, StandardCost, ListPrice, Size, SizeUnitMeasureCode, WeightUnitMeasureCode, Weight, DaysToManufacture, ProductLine, Class, Style, ProductSubcategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, rowguid, ModifiedDate,'delete' 
+from deleted
+end
+
+create trigger product_update
+on Production.Product
+after update
+as
+begin
+insert into ProductLogs(ProductID,Name,ProductNumber,MakeFlag,FinishedGoodsFlag,Color,SafetyStockLevel,ReorderPoint,StandardCost,ListPrice,Size,SizeUnitMeasureCode,WeightUnitMeasureCode,Weight,DaysToManufacture,ProductLine,Class,Style,ProductSubcategoryID,ProductModelID,SellStartDate,SellEndDate,DiscontinuedDate,rowguid,ModifiedDate,change)
+select ProductID, Name, ProductNumber, MakeFlag, FinishedGoodsFlag, Color, SafetyStockLevel, ReorderPoint, StandardCost, ListPrice, Size, SizeUnitMeasureCode, WeightUnitMeasureCode, Weight, DaysToManufacture, ProductLine, Class, Style, ProductSubcategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, rowguid, ModifiedDate,'update' 
+from inserted
+end
+
+INSERT INTO Production.Product (Name, ProductNumber, MakeFlag, FinishedGoodsFlag, Color, SafetyStockLevel, ReorderPoint, StandardCost, ListPrice, Size, SizeUnitMeasureCode, WeightUnitMeasureCode, Weight, DaysToManufacture, ProductLine, Class, Style, ProductSubcategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, rowguid, ModifiedDate) 
+values ('maryam', '12345', 0, 0, NULL, 4000, 520,10000, 10000, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL,NULL, NULL, '2001-04-30 00:00:00.000', NULL, NULL, '806D42F6-C21F-4D20-B528-02FFDB55FD1E', '2014-02-08 10:01:36.827')
+delete from Production.Product where ProductNumber= '12345'
+
+INSERT INTO Production.Product (Name, ProductNumber, MakeFlag, FinishedGoodsFlag, Color, SafetyStockLevel, ReorderPoint, StandardCost, ListPrice, Size, SizeUnitMeasureCode, WeightUnitMeasureCode, Weight, DaysToManufacture, ProductLine, Class, Style, ProductSubcategoryID, ProductModelID, SellStartDate, SellEndDate, DiscontinuedDate, rowguid, ModifiedDate) 
+values ('zahra', '67890', 0, 0, NULL, 5000, 520,20000, 20000, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL,NULL, NULL, '2001-04-30 00:00:00.000', NULL, NULL, '806D42F6-C21F-4D20-B528-02FFDB55FD1E', '2017-02-15 22:01:36.827')
+update Production.Product set color = 'blue' where ProductNumber= '67890'
+
+select * from ProductLogs
+
+---------------------------q2
+CREATE TABLE ProductLogsCopy(
+	[ProductID] [int] ,
+	[Name] [dbo].[Name],
+	[ProductNumber] [nvarchar](25),
+	[MakeFlag] [dbo].[Flag],
+	[FinishedGoodsFlag] [dbo].[Flag],
+	[Color] [nvarchar](15),
+	[SafetyStockLevel] [smallint],
+	[ReorderPoint] [smallint],
+	[StandardCost] [money],
+	[ListPrice] [money],
+	[Size] [nvarchar](5),
+	[SizeUnitMeasureCode] [nchar](3),
+	[WeightUnitMeasureCode] [nchar](3),
+	[Weight] [decimal](8, 2),
+	[DaysToManufacture] [int],
+	[ProductLine] [nchar](2),
+	[Class] [nchar](2),
+	[Style] [nchar](2),
+	[ProductSubcategoryID] [int],
+	[ProductModelID] [int],
+	[SellStartDate] [datetime],
+	[SellEndDate] [datetime],
+	[DiscontinuedDate] [datetime],
+	[rowguid] [uniqueidentifier],
+	[ModifiedDate] [datetime],
+	[change] [varchar](20))
+
+insert into ProductLogsCopy select * from ProductLogs
+
+UPDATE ProductLogsCopy
+set Color='red' where ProductNumber=12345
+
+
+---------------------------q3
+CREATE TABLE ProductLogsChange(
+	[ProductID] [int] ,
+	[Name] [dbo].[Name],
+	[ProductNumber] [nvarchar](25),
+	[MakeFlag] [dbo].[Flag],
+	[FinishedGoodsFlag] [dbo].[Flag],
+	[Color] [nvarchar](15),
+	[SafetyStockLevel] [smallint],
+	[ReorderPoint] [smallint],
+	[StandardCost] [money],
+	[ListPrice] [money],
+	[Size] [nvarchar](5),
+	[SizeUnitMeasureCode] [nchar](3),
+	[WeightUnitMeasureCode] [nchar](3),
+	[Weight] [decimal](8, 2),
+	[DaysToManufacture] [int],
+	[ProductLine] [nchar](2),
+	[Class] [nchar](2),
+	[Style] [nchar](2),
+	[ProductSubcategoryID] [int],
+	[ProductModelID] [int],
+	[SellStartDate] [datetime],
+	[SellEndDate] [datetime],
+	[DiscontinuedDate] [datetime],
+	[rowguid] [uniqueidentifier],
+	[ModifiedDate] [datetime],
+	[change] [varchar](20))
+
+create procedure change
+as
+begin
+insert into ProductLogsChange
+select *
+from ProductLogs 
+except 
+select *
+from ProductLogsCopy
+end
+
+execute change
+
+select * from ProductLogsChange
